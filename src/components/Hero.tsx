@@ -54,12 +54,21 @@ const Hero = () => {
             &lt;developer /&gt;
           </motion.p>
 
-          {/* Name */}
+          {/* Name - Draggable */}
           <motion.h1
+            drag
+            dragConstraints={{ left: -100, right: 100, top: -50, bottom: 50 }}
+            dragElastic={0.2}
+            dragTransition={{ bounceStiffness: 300, bounceDamping: 20 }}
+            whileDrag={{ 
+              scale: 1.05,
+              cursor: "grabbing",
+              filter: "drop-shadow(0 0 25px hsl(250 100% 60% / 0.6))"
+            }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="text-6xl md:text-7xl lg:text-8xl font-bold leading-none tracking-tight"
+            className="text-6xl md:text-7xl lg:text-8xl font-bold leading-none tracking-tight cursor-grab select-none"
           >
             AKSHIT{" "}
             <span className="gradient-text">THAKUR</span>
@@ -101,21 +110,25 @@ const Hero = () => {
             transition={{ delay: 0.6 }}
             className="flex flex-wrap gap-4 pt-4"
           >
-            <Button
-              size="lg"
-              className="rounded-full px-8 bg-pink-accent hover:bg-gradient-to-r hover:from-pink-accent hover:to-cyan-accent text-primary-foreground transition-all duration-300 glow-pink"
-              onClick={() => document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" })}
-            >
-              View Projects
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              className="rounded-full px-8 border-2 border-cyan-accent text-foreground hover:bg-cyan-accent/10 hover:glow-cyan transition-all duration-300"
-              onClick={() => window.open("#", "_blank")}
-            >
-              Download Resume
-            </Button>
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Button
+                size="lg"
+                className="rounded-full px-8 bg-pink-accent hover:bg-gradient-to-r hover:from-pink-accent hover:to-cyan-accent text-primary-foreground transition-all duration-300 glow-pink"
+                onClick={() => document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" })}
+              >
+                View Projects
+              </Button>
+            </motion.div>
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Button
+                size="lg"
+                variant="outline"
+                className="rounded-full px-8 border-2 border-cyan-accent text-foreground hover:bg-cyan-accent/10 hover:glow-cyan transition-all duration-300"
+                onClick={() => window.open("#", "_blank")}
+              >
+                Download Resume
+              </Button>
+            </motion.div>
           </motion.div>
         </motion.div>
 

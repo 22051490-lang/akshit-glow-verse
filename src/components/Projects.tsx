@@ -74,19 +74,34 @@ const Projects = () => {
             <motion.div
               key={idx}
               variants={item}
-              whileHover={{ y: -8 }}
-              className="group relative rounded-2xl p-6 border-2 border-transparent bg-card/70 backdrop-blur-sm hover:border-pink-accent hover:glow-pink transition-all duration-300"
+              whileHover={{ 
+                y: -12, 
+                scale: 1.03,
+                boxShadow: "0 20px 40px hsl(250 100% 60% / 0.25)"
+              }}
+              transition={{ duration: 0.4, ease: "easeOut" }}
+              className="group relative rounded-2xl p-6 border-2 border-transparent bg-card/70 backdrop-blur-sm hover:border-pink-accent cursor-pointer"
               style={{
-                background: "linear-gradient(white, white) padding-box, linear-gradient(90deg, hsl(330 100% 50%), hsl(195 100% 50%)) border-box",
+                background: "linear-gradient(white, white) padding-box, linear-gradient(90deg, hsl(250 100% 60%), hsl(195 100% 45%)) border-box",
               }}
             >
               {/* Animated Border Gradient */}
-              <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-pink-accent via-cyan-accent to-pink-accent opacity-0 group-hover:opacity-20 transition-opacity duration-500 blur-xl" />
+              <motion.div 
+                className="absolute inset-0 rounded-2xl bg-gradient-to-r from-pink-accent via-cyan-accent to-pink-accent opacity-0 group-hover:opacity-30 blur-xl"
+                animate={{
+                  backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
+                }}
+                transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+              />
               
               <div className="relative z-10 space-y-4">
-                <h3 className="text-2xl font-bold gradient-text">
+                <motion.h3 
+                  className="text-2xl font-bold gradient-text"
+                  whileHover={{ scale: 1.05, x: 5 }}
+                  transition={{ duration: 0.3 }}
+                >
                   {project.title}
-                </h3>
+                </motion.h3>
                 
                 <p className="text-muted-foreground leading-relaxed">
                   {project.description}

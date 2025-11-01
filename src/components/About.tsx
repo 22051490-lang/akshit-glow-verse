@@ -27,7 +27,11 @@ const About = () => {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="space-y-6"
+            whileHover={{ 
+              x: 10,
+              transition: { duration: 0.4 }
+            }}
+            className="space-y-6 cursor-pointer"
           >
             <p className="text-lg text-muted-foreground leading-relaxed">
               I'm <span className="gradient-text font-semibold">Akshit Thakur</span>, 
@@ -66,7 +70,13 @@ const About = () => {
                 repeat: Infinity,
                 repeatType: "reverse",
               }}
-              className="relative"
+              whileHover={{
+                scale: 1.15,
+                rotate: 15,
+                filter: "drop-shadow(0 0 30px hsl(195 100% 45% / 0.6))",
+                transition: { duration: 0.5 }
+              }}
+              className="relative cursor-pointer"
             >
               <img 
                 src={aboutShape} 

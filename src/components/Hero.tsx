@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { ArrowDown } from "lucide-react";
-import heroVisual from "@/assets/hero-visual.png";
+import { ArrowDown, Code2, Terminal } from "lucide-react";
 
 const Hero = () => {
   return (
@@ -125,16 +124,96 @@ const Hero = () => {
           initial={{ opacity: 0, x: 50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="md:col-span-2 relative"
+          className="md:col-span-2 relative h-[500px] flex items-center justify-center"
         >
-          <motion.img
-            src={heroVisual}
-            alt="Futuristic visual element"
-            className="w-full h-auto animate-float"
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 1, delay: 0.5 }}
-          />
+          {/* Floating Code Symbol */}
+          <motion.div
+            animate={{
+              y: [0, -20, 0],
+              rotate: [0, 5, -5, 0],
+            }}
+            transition={{
+              duration: 6,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+            className="relative"
+          >
+            {/* Main Code Icon */}
+            <motion.div
+              animate={{
+                scale: [1, 1.05, 1],
+              }}
+              transition={{
+                duration: 3,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+              className="relative"
+            >
+              <Code2 
+                className="w-64 h-64 text-cyan-accent opacity-20" 
+                strokeWidth={1.5}
+              />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <Code2 
+                  className="w-48 h-48 gradient-text opacity-80 glow-cyan" 
+                  strokeWidth={2}
+                />
+              </div>
+            </motion.div>
+
+            {/* Orbiting Geometric Shapes */}
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+              className="absolute inset-0"
+            >
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-8 rounded-lg bg-gradient-to-r from-pink-accent to-cyan-accent opacity-60 blur-sm" />
+            </motion.div>
+
+            <motion.div
+              animate={{ rotate: -360 }}
+              transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+              className="absolute inset-0"
+            >
+              <div className="absolute bottom-0 right-0 w-6 h-6 rounded-full bg-cyan-accent opacity-40 blur-sm" />
+            </motion.div>
+
+            {/* Terminal Icon - Top Right */}
+            <motion.div
+              animate={{
+                y: [0, 10, 0],
+                x: [0, 5, 0],
+              }}
+              transition={{
+                duration: 4,
+                repeat: Infinity,
+                ease: "easeInOut",
+                delay: 0.5
+              }}
+              className="absolute -top-12 -right-12"
+            >
+              <Terminal className="w-16 h-16 text-pink-accent opacity-30" strokeWidth={1.5} />
+            </motion.div>
+
+            {/* Brackets - Bottom Left */}
+            <motion.div
+              animate={{
+                y: [0, -8, 0],
+                opacity: [0.3, 0.6, 0.3]
+              }}
+              transition={{
+                duration: 5,
+                repeat: Infinity,
+                ease: "easeInOut",
+                delay: 1
+              }}
+              className="absolute -bottom-8 -left-8 text-6xl font-mono gradient-text"
+            >
+              {"{ }"}
+            </motion.div>
+          </motion.div>
         </motion.div>
       </div>
 

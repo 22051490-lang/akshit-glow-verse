@@ -1,44 +1,35 @@
 import { useEffect, useRef, useState } from "react";
 
-interface CursorPosition {
+interface GridSquare {
   x: number;
   y: number;
-}
-
-interface TrailPoint extends CursorPosition {
+  size: number;
   opacity: number;
-  scale: number;
+  createdAt: number;
+  hue: number;
 }
 
 const CustomCursor = () => {
   const [isHovering, setIsHovering] = useState(false);
-  const cursorRef = useRef<HTMLDivElement>(null);
-  const trailRefs = useRef<HTMLDivElement[]>([]);
-  const mousePos = useRef<CursorPosition>({ x: 0, y: 0 });
-  const cursorPos = useRef<CursorPosition>({ x: 0, y: 0 });
-  const trailPositions = useRef<TrailPoint[]>([]);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const mousePos = useRef({ x: 0, y: 0 });
+  const gridSquares = useRef<GridSquare[]>([]);
   const rafId = useRef<number>();
+  const lastSquareTime = useRef(0);
 
-  const TRAIL_LENGTH = 12;
-  const LERP_FACTOR = 0.15;
+  // Configuration - adjustable for intensity
+  const GRID_SIZE = 20; // Size of each grid square
+  const FADE_DURATION = 800; // ms
+  const SPAWN_INTERVAL = 50; // ms between spawns
+  const SPAWN_INTERVAL_HOVER = 30; // ms between spawns when hovering
+  const MAX_SQUARES = 60;
 
-  // Initialize trail positions
-  useEffect(() => {
-    trailPositions.current = Array.from({ length: TRAIL_LENGTH }, (_, i) => ({
-      x: 0,
-      y: 0,
-      opacity: 1 - (i / TRAIL_LENGTH) * 0.9,
-      scale: 1 - (i / TRAIL_LENGTH) * 0.7,
-    }));
-  }, []);
-
-  // Track mouse movement
+  // Track mouse movement and hover state
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       mousePos.current = { x: e.clientX, y: e.clientY };
     };
 
-    // Detect hovering over interactive elements
     const handleMouseOver = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
       const isInteractive = 
@@ -62,33 +53,98 @@ const CustomCursor = () => {
     };
   }, []);
 
-  // Smooth animation loop
+  // Setup canvas and animation
   useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    // Set canvas size
+    const resizeCanvas = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+    resizeCanvas();
+    window.addEventListener("resize", resizeCanvas);
+
+    // Animation loop
     const animate = () => {
-      // Smooth cursor position with lerp (linear interpolation)
-      cursorPos.current.x += (mousePos.current.x - cursorPos.current.x) * LERP_FACTOR;
-      cursorPos.current.y += (mousePos.current.y - cursorPos.current.y) * LERP_FACTOR;
-
-      // Update main cursor
-      if (cursorRef.current) {
-        cursorRef.current.style.transform = `translate3d(${cursorPos.current.x}px, ${cursorPos.current.y}px, 0) translate(-50%, -50%)`;
-      }
-
-      // Update trail with cascading delay
-      for (let i = TRAIL_LENGTH - 1; i > 0; i--) {
-        trailPositions.current[i].x = trailPositions.current[i - 1].x;
-        trailPositions.current[i].y = trailPositions.current[i - 1].y;
-      }
-      trailPositions.current[0].x = cursorPos.current.x;
-      trailPositions.current[0].y = cursorPos.current.y;
-
-      // Render trail
-      trailRefs.current.forEach((trail, i) => {
-        if (trail && trailPositions.current[i]) {
-          const pos = trailPositions.current[i];
-          trail.style.transform = `translate3d(${pos.x}px, ${pos.y}px, 0) translate(-50%, -50%) scale(${pos.scale})`;
-          trail.style.opacity = pos.opacity.toString();
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const now = performance.now();
+      
+      // Spawn new grid squares
+      const spawnInterval = isHovering ? SPAWN_INTERVAL_HOVER : SPAWN_INTERVAL;
+      if (now - lastSquareTime.current > spawnInterval && gridSquares.current.length < MAX_SQUARES) {
+        // Snap to grid
+        const gridX = Math.floor(mousePos.current.x / GRID_SIZE) * GRID_SIZE;
+        const gridY = Math.floor(mousePos.current.y / GRID_SIZE) * GRID_SIZE;
+        
+        // Create grid pattern around cursor
+        const offsets = [
+          { dx: 0, dy: 0 },
+          { dx: 1, dy: 0 },
+          { dx: -1, dy: 0 },
+          { dx: 0, dy: 1 },
+          { dx: 0, dy: -1 },
+        ];
+        
+        const numSquares = isHovering ? 3 : 1;
+        for (let i = 0; i < numSquares && i < offsets.length; i++) {
+          const offset = offsets[i];
+          gridSquares.current.push({
+            x: gridX + offset.dx * GRID_SIZE,
+            y: gridY + offset.dy * GRID_SIZE,
+            size: GRID_SIZE,
+            opacity: 1,
+            createdAt: now,
+            hue: 230 + Math.random() * 30, // Blue to purple range
+          });
         }
+        
+        lastSquareTime.current = now;
+      }
+
+      // Update and render grid squares
+      gridSquares.current = gridSquares.current.filter((square) => {
+        const age = now - square.createdAt;
+        const progress = age / FADE_DURATION;
+        
+        if (progress >= 1) return false;
+        
+        // Fade out
+        square.opacity = 1 - progress;
+        
+        // Render square
+        const glowIntensity = isHovering ? 0.6 : 0.4;
+        
+        // Glow effect
+        ctx.shadowBlur = 15;
+        ctx.shadowColor = `hsla(${square.hue}, 100%, 60%, ${square.opacity * glowIntensity})`;
+        
+        // Main square
+        ctx.fillStyle = `hsla(${square.hue}, 100%, 60%, ${square.opacity * 0.3})`;
+        ctx.fillRect(square.x, square.y, square.size, square.size);
+        
+        // Border
+        ctx.strokeStyle = `hsla(${square.hue}, 100%, 70%, ${square.opacity * 0.6})`;
+        ctx.lineWidth = 2;
+        ctx.strokeRect(square.x, square.y, square.size, square.size);
+        
+        // Inner glow
+        ctx.fillStyle = `hsla(${square.hue}, 100%, 80%, ${square.opacity * 0.2})`;
+        ctx.fillRect(
+          square.x + square.size * 0.25,
+          square.y + square.size * 0.25,
+          square.size * 0.5,
+          square.size * 0.5
+        );
+        
+        // Reset shadow
+        ctx.shadowBlur = 0;
+        
+        return true;
       });
 
       rafId.current = requestAnimationFrame(animate);
@@ -100,8 +156,9 @@ const CustomCursor = () => {
       if (rafId.current) {
         cancelAnimationFrame(rafId.current);
       }
+      window.removeEventListener("resize", resizeCanvas);
     };
-  }, []);
+  }, [isHovering]);
 
   // Hide default cursor
   useEffect(() => {
@@ -121,66 +178,26 @@ const CustomCursor = () => {
 
   return (
     <>
-      {/* Trail circles */}
-      {Array.from({ length: TRAIL_LENGTH }).map((_, i) => (
-        <div
-          key={i}
-          ref={(el) => {
-            if (el) trailRefs.current[i] = el;
-          }}
-          className="pointer-events-none fixed top-0 left-0 z-[9998] mix-blend-screen"
-          style={{
-            width: isHovering ? "48px" : "32px",
-            height: isHovering ? "48px" : "32px",
-            borderRadius: "50%",
-            background: `radial-gradient(circle, 
-              hsl(250 100% 60% / ${0.4 - i * 0.03}), 
-              hsl(220 100% 55% / ${0.3 - i * 0.025}),
-              hsl(195 100% 45% / ${0.2 - i * 0.015}),
-              transparent
-            )`,
-            filter: `blur(${4 + i * 0.5}px)`,
-            transition: "width 0.3s ease, height 0.3s ease",
-            willChange: "transform, opacity",
-          }}
-        />
-      ))}
-
-      {/* Main cursor */}
-      <div
-        ref={cursorRef}
-        className="pointer-events-none fixed top-0 left-0 z-[9999] mix-blend-screen"
-        style={{
-          width: isHovering ? "56px" : "40px",
-          height: isHovering ? "56px" : "40px",
-          borderRadius: "50%",
-          background: `radial-gradient(circle, 
-            hsl(250 100% 60% / 0.6), 
-            hsl(220 100% 55% / 0.4),
-            hsl(195 100% 45% / 0.3),
-            transparent
-          )`,
-          border: "2px solid hsl(195 100% 45% / 0.5)",
-          filter: "blur(2px)",
-          transition: "width 0.3s ease, height 0.3s ease, filter 0.3s ease",
-          boxShadow: isHovering
-            ? "0 0 30px hsl(250 100% 60% / 0.6), 0 0 60px hsl(195 100% 45% / 0.4)"
-            : "0 0 20px hsl(250 100% 60% / 0.4), 0 0 40px hsl(195 100% 45% / 0.3)",
-          willChange: "transform",
-        }}
+      {/* Canvas for grid trail */}
+      <canvas
+        ref={canvasRef}
+        className="pointer-events-none fixed top-0 left-0 z-[9998]"
+        style={{ mixBlendMode: "screen" }}
       />
-
-      {/* Inner dot for precision */}
+      
+      {/* Precision dot cursor */}
       <div
-        className="pointer-events-none fixed top-0 left-0 z-[10000]"
+        className="pointer-events-none fixed top-0 left-0 z-[9999]"
         style={{
-          width: "4px",
-          height: "4px",
+          width: isHovering ? "8px" : "6px",
+          height: isHovering ? "8px" : "6px",
           borderRadius: "50%",
-          background: "hsl(195 100% 70%)",
+          background: "hsl(230 100% 70%)",
           transform: `translate3d(${mousePos.current.x}px, ${mousePos.current.y}px, 0) translate(-50%, -50%)`,
-          transition: "none",
-          boxShadow: "0 0 8px hsl(195 100% 70% / 0.8)",
+          transition: "width 0.2s ease, height 0.2s ease",
+          boxShadow: isHovering
+            ? "0 0 12px hsl(230 100% 70% / 0.9), 0 0 24px hsl(260 100% 60% / 0.6)"
+            : "0 0 8px hsl(230 100% 70% / 0.8)",
         }}
       />
     </>

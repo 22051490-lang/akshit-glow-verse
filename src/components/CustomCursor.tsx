@@ -99,7 +99,7 @@ const CustomCursor = () => {
             size: GRID_SIZE,
             opacity: 1,
             createdAt: now,
-            hue: 280 + Math.random() * 40, // Pink to cyan range (280-320)
+            hue: 260 + Math.random() * 20, // Purple range
           });
         }
         
@@ -117,28 +117,28 @@ const CustomCursor = () => {
         square.opacity = 1 - progress;
         
         // Render square
-        const glowIntensity = isHovering ? 0.8 : 0.6;
+        const glowIntensity = isHovering ? 1 : 0.8;
         
-        // Glow effect
-        ctx.shadowBlur = 20;
-        ctx.shadowColor = `hsla(${square.hue}, 100%, 50%, ${square.opacity * glowIntensity})`;
+        // Dark shadow for contrast
+        ctx.shadowBlur = 25;
+        ctx.shadowColor = `hsla(${square.hue}, 80%, 20%, ${square.opacity * 0.6})`;
         
-        // Main square with higher opacity
-        ctx.fillStyle = `hsla(${square.hue}, 100%, 50%, ${square.opacity * 0.5})`;
+        // Main square with dark fill
+        ctx.fillStyle = `hsla(${square.hue}, 90%, 30%, ${square.opacity * 0.7})`;
         ctx.fillRect(square.x, square.y, square.size, square.size);
         
-        // Border with more vibrant color
-        ctx.strokeStyle = `hsla(${square.hue}, 100%, 60%, ${square.opacity * 0.8})`;
-        ctx.lineWidth = 2;
+        // Strong dark border
+        ctx.strokeStyle = `hsla(${square.hue}, 95%, 25%, ${square.opacity * 0.9})`;
+        ctx.lineWidth = 3;
         ctx.strokeRect(square.x, square.y, square.size, square.size);
         
-        // Inner glow with higher visibility
-        ctx.fillStyle = `hsla(${square.hue}, 100%, 70%, ${square.opacity * 0.4})`;
+        // Inner highlight
+        ctx.fillStyle = `hsla(${square.hue}, 100%, 40%, ${square.opacity * 0.5})`;
         ctx.fillRect(
-          square.x + square.size * 0.25,
-          square.y + square.size * 0.25,
-          square.size * 0.5,
-          square.size * 0.5
+          square.x + square.size * 0.3,
+          square.y + square.size * 0.3,
+          square.size * 0.4,
+          square.size * 0.4
         );
         
         // Reset shadow
@@ -182,22 +182,22 @@ const CustomCursor = () => {
       <canvas
         ref={canvasRef}
         className="pointer-events-none fixed top-0 left-0 z-[9998]"
-        style={{ mixBlendMode: "screen" }}
       />
       
       {/* Precision dot cursor */}
       <div
         className="pointer-events-none fixed top-0 left-0 z-[9999]"
         style={{
-          width: isHovering ? "10px" : "8px",
-          height: isHovering ? "10px" : "8px",
+          width: isHovering ? "12px" : "10px",
+          height: isHovering ? "12px" : "10px",
           borderRadius: "50%",
-          background: "hsl(300 100% 60%)",
+          background: "hsl(260 90% 35%)",
+          border: "2px solid hsl(260 80% 20%)",
           transform: `translate3d(${mousePos.current.x}px, ${mousePos.current.y}px, 0) translate(-50%, -50%)`,
           transition: "width 0.2s ease, height 0.2s ease",
           boxShadow: isHovering
-            ? "0 0 15px hsl(300 100% 60% / 1), 0 0 30px hsl(195 100% 50% / 0.8)"
-            : "0 0 10px hsl(300 100% 60% / 0.9)",
+            ? "0 0 15px hsl(260 90% 35% / 0.8), 0 0 30px hsl(260 80% 20% / 0.6), 0 2px 8px rgba(0,0,0,0.3)"
+            : "0 0 10px hsl(260 90% 35% / 0.7), 0 2px 6px rgba(0,0,0,0.2)",
         }}
       />
     </>

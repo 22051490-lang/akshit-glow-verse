@@ -93,13 +93,13 @@ const CustomCursor = () => {
         const numSquares = isHovering ? 3 : 1;
         for (let i = 0; i < numSquares && i < offsets.length; i++) {
           const offset = offsets[i];
-          gridSquares.current.push({
+        gridSquares.current.push({
             x: gridX + offset.dx * GRID_SIZE,
             y: gridY + offset.dy * GRID_SIZE,
             size: GRID_SIZE,
             opacity: 1,
             createdAt: now,
-            hue: 230 + Math.random() * 30, // Blue to purple range
+            hue: 280 + Math.random() * 40, // Pink to cyan range (280-320)
           });
         }
         
@@ -117,23 +117,23 @@ const CustomCursor = () => {
         square.opacity = 1 - progress;
         
         // Render square
-        const glowIntensity = isHovering ? 0.6 : 0.4;
+        const glowIntensity = isHovering ? 0.8 : 0.6;
         
         // Glow effect
-        ctx.shadowBlur = 15;
-        ctx.shadowColor = `hsla(${square.hue}, 100%, 60%, ${square.opacity * glowIntensity})`;
+        ctx.shadowBlur = 20;
+        ctx.shadowColor = `hsla(${square.hue}, 100%, 50%, ${square.opacity * glowIntensity})`;
         
-        // Main square
-        ctx.fillStyle = `hsla(${square.hue}, 100%, 60%, ${square.opacity * 0.3})`;
+        // Main square with higher opacity
+        ctx.fillStyle = `hsla(${square.hue}, 100%, 50%, ${square.opacity * 0.5})`;
         ctx.fillRect(square.x, square.y, square.size, square.size);
         
-        // Border
-        ctx.strokeStyle = `hsla(${square.hue}, 100%, 70%, ${square.opacity * 0.6})`;
+        // Border with more vibrant color
+        ctx.strokeStyle = `hsla(${square.hue}, 100%, 60%, ${square.opacity * 0.8})`;
         ctx.lineWidth = 2;
         ctx.strokeRect(square.x, square.y, square.size, square.size);
         
-        // Inner glow
-        ctx.fillStyle = `hsla(${square.hue}, 100%, 80%, ${square.opacity * 0.2})`;
+        // Inner glow with higher visibility
+        ctx.fillStyle = `hsla(${square.hue}, 100%, 70%, ${square.opacity * 0.4})`;
         ctx.fillRect(
           square.x + square.size * 0.25,
           square.y + square.size * 0.25,
@@ -189,15 +189,15 @@ const CustomCursor = () => {
       <div
         className="pointer-events-none fixed top-0 left-0 z-[9999]"
         style={{
-          width: isHovering ? "8px" : "6px",
-          height: isHovering ? "8px" : "6px",
+          width: isHovering ? "10px" : "8px",
+          height: isHovering ? "10px" : "8px",
           borderRadius: "50%",
-          background: "hsl(230 100% 70%)",
+          background: "hsl(300 100% 60%)",
           transform: `translate3d(${mousePos.current.x}px, ${mousePos.current.y}px, 0) translate(-50%, -50%)`,
           transition: "width 0.2s ease, height 0.2s ease",
           boxShadow: isHovering
-            ? "0 0 12px hsl(230 100% 70% / 0.9), 0 0 24px hsl(260 100% 60% / 0.6)"
-            : "0 0 8px hsl(230 100% 70% / 0.8)",
+            ? "0 0 15px hsl(300 100% 60% / 1), 0 0 30px hsl(195 100% 50% / 0.8)"
+            : "0 0 10px hsl(300 100% 60% / 0.9)",
         }}
       />
     </>

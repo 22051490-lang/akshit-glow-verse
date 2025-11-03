@@ -7,10 +7,10 @@ import { useState } from "react";
 import { toast } from "@/hooks/use-toast";
 import emailjs from "emailjs-com";
 
-// 🔑 Replace these with your actual EmailJS credentials
-const EMAILJS_SERVICE_ID = "YOUR_SERVICE_ID";
-const EMAILJS_TEMPLATE_ID = "YOUR_TEMPLATE_ID";
-const EMAILJS_PUBLIC_KEY = "YOUR_PUBLIC_KEY";
+// 🔑 EmailJS credentials
+const EMAILJS_SERVICE_ID = "service_f1296c1";
+const EMAILJS_TEMPLATE_ID = "template_stldtng";
+const EMAILJS_PUBLIC_KEY = "HVCEsOF-4f19QH10NV8Cz";
 
 const Contact = () => {
   const [formData, setFormData] = useState({

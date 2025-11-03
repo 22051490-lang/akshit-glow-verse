@@ -10,7 +10,7 @@ import emailjs from "emailjs-com";
 // 🔑 EmailJS credentials
 const EMAILJS_SERVICE_ID = "service_f1296c1";
 const EMAILJS_TEMPLATE_ID = "template_stldtng";
-const EMAILJS_PUBLIC_KEY = "HVCEsOF-4f19QH10NV8Cz";
+const EMAILJS_PUBLIC_KEY = "fLopjtz45W0vOxERv";
 
 const Contact = () => {
   const [formData, setFormData] = useState({

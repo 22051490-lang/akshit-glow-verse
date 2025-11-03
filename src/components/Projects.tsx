@@ -7,22 +7,22 @@ const projects = [
     title: "Algo-Vision",
     description: "An interactive sorting algorithm visualizer built with React and Framer Motion, helping users understand algorithms through beautiful animations.",
     tags: ["React.js", "Framer Motion", "TailwindCSS", "Algorithms"],
-    liveUrl: "#",
-    githubUrl: "#",
+    liveUrl: "https://github.com/thxkursaabz/algo-vision",
+    githubUrl: "https://github.com/thxkursaabz/algo-vision",
   },
   {
     title: "Interview Sim",
     description: "AI-powered interview coach using MERN stack and NLP models from Hugging Face to provide real-time feedback and practice scenarios.",
     tags: ["MERN", "Hugging Face", "NLP", "WebRTC"],
-    liveUrl: "#",
-    githubUrl: "#",
+    liveUrl: "https://github.com/thxkursaabz/interview-sim",
+    githubUrl: "https://github.com/thxkursaabz/interview-sim",
   },
   {
     title: "Meet-Sphere",
     description: "Real-time meeting platform with AI-generated transcripts, leveraging Hugging Face transformers and WebRTC for seamless collaboration.",
     tags: ["Next.js", "WebRTC", "Hugging Face", "Socket.io"],
-    liveUrl: "#",
-    githubUrl: "#",
+    liveUrl: "https://github.com/thxkursaabz/meet-sphere",
+    githubUrl: "https://github.com/thxkursaabz/meet-sphere",
   },
 ];
 

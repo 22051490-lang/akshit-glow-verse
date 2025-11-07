@@ -1,6 +1,6 @@
 import { motion, useMotionValue, useSpring } from "framer-motion";
 import { useEffect, useState } from "react";
-import holographicAI from "@/assets/holographic-ai.png";
+import aiSphereCore from "@/assets/ai-sphere-core.png";
 
 interface Particle {
   id: number;
@@ -14,15 +14,16 @@ interface Particle {
 const InteractiveAIRobot = () => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [particles, setParticles] = useState<Particle[]>([]);
+  const [lightIntensity, setLightIntensity] = useState(0.5);
   
   const rotateX = useMotionValue(0);
   const rotateY = useMotionValue(0);
   
-  const springConfig = { damping: 20, stiffness: 150 };
+  const springConfig = { damping: 25, stiffness: 120 };
   const rotateXSpring = useSpring(rotateX, springConfig);
   const rotateYSpring = useSpring(rotateY, springConfig);
 
-  // Track mouse movement for head rotation
+  // Track mouse movement for sphere rotation and light intensity
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       const rect = document.getElementById("ai-robot-container")?.getBoundingClientRect();
@@ -34,9 +35,15 @@ const InteractiveAIRobot = () => {
       const deltaX = e.clientX - centerX;
       const deltaY = e.clientY - centerY;
       
-      const maxRotation = 15;
-      const rotX = Math.max(-maxRotation, Math.min(maxRotation, (deltaY / window.innerHeight) * 30));
-      const rotY = Math.max(-maxRotation, Math.min(maxRotation, (deltaX / window.innerWidth) * 30));
+      // Calculate distance from center for light intensity
+      const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+      const maxDistance = Math.sqrt(window.innerWidth * window.innerWidth + window.innerHeight * window.innerHeight);
+      const intensity = Math.max(0.3, Math.min(1, 1 - (distance / maxDistance) * 1.5));
+      setLightIntensity(intensity);
+      
+      const maxRotation = 12;
+      const rotX = Math.max(-maxRotation, Math.min(maxRotation, (deltaY / window.innerHeight) * 25));
+      const rotY = Math.max(-maxRotation, Math.min(maxRotation, (deltaX / window.innerWidth) * 25));
       
       rotateX.set(-rotX);
       rotateY.set(rotY);
@@ -176,7 +183,7 @@ const InteractiveAIRobot = () => {
         }}
       />
 
-      {/* Main holographic AI figure with head tracking */}
+      {/* Main AI sphere core with motion-reactive lighting */}
       <motion.div
         className="relative cursor-pointer"
         style={{
@@ -185,49 +192,74 @@ const InteractiveAIRobot = () => {
           transformStyle: "preserve-3d",
         }}
         whileHover={{
-          scale: 1.08,
-          transition: { duration: 0.4 },
+          scale: 1.1,
+          transition: { duration: 0.5, ease: "easeOut" },
         }}
       >
         <motion.img
-          src={holographicAI}
-          alt="Minimal futuristic holographic AI figure made of flowing data particles"
-          className="w-full max-w-md h-auto opacity-90"
+          src={aiSphereCore}
+          alt="Glowing holographic AI core sphere made of flowing data streams and neural connections"
+          className="w-full max-w-lg h-auto"
           style={{
-            filter: "drop-shadow(0 0 40px hsl(195 100% 45% / 0.4)) drop-shadow(0 0 60px hsl(280 80% 60% / 0.3))",
+            filter: `brightness(${0.85 + lightIntensity * 0.3}) drop-shadow(0 0 ${30 + lightIntensity * 40}px hsl(195 100% 45% / ${0.5 + lightIntensity * 0.3})) drop-shadow(0 0 ${40 + lightIntensity * 50}px hsl(280 80% 60% / ${0.4 + lightIntensity * 0.3}))`,
           }}
           animate={{
-            filter: [
-              "drop-shadow(0 0 40px hsl(195 100% 45% / 0.4)) drop-shadow(0 0 60px hsl(280 80% 60% / 0.3))",
-              "drop-shadow(0 0 50px hsl(280 80% 60% / 0.5)) drop-shadow(0 0 70px hsl(195 100% 45% / 0.4))",
-              "drop-shadow(0 0 40px hsl(195 100% 45% / 0.4)) drop-shadow(0 0 60px hsl(280 80% 60% / 0.3))",
-            ],
-            opacity: [0.88, 0.95, 0.88],
+            rotate: [0, 360],
           }}
           transition={{
-            duration: 5,
+            rotate: {
+              duration: 60,
+              repeat: Infinity,
+              ease: "linear",
+            },
+          }}
+        />
+        
+        {/* Dynamic multi-layered glow that responds to cursor proximity */}
+        <motion.div 
+          className="absolute inset-0 -z-10 blur-3xl"
+          style={{
+            background: `radial-gradient(circle at 40% 50%, hsl(195 100% 45% / ${0.3 + lightIntensity * 0.3}), transparent 70%)`,
+            opacity: 0.6 + lightIntensity * 0.2,
+          }}
+        />
+        <motion.div 
+          className="absolute inset-0 -z-10 blur-3xl"
+          style={{
+            background: `radial-gradient(circle at 60% 50%, hsl(280 80% 60% / ${0.3 + lightIntensity * 0.3}), transparent 70%)`,
+            opacity: 0.5 + lightIntensity * 0.2,
+          }}
+        />
+        <motion.div 
+          className="absolute inset-0 -z-10 blur-2xl"
+          style={{
+            background: `radial-gradient(circle at 50% 50%, hsl(329 100% 50% / ${0.2 + lightIntensity * 0.4}), transparent 60%)`,
+            opacity: 0.4 + lightIntensity * 0.3,
+          }}
+          animate={{
+            scale: [1, 1.1, 1],
+          }}
+          transition={{
+            duration: 3,
             repeat: Infinity,
             ease: "easeInOut",
           }}
         />
         
-        {/* Multi-layered holographic glow behind figure */}
-        <div 
-          className="absolute inset-0 -z-10 blur-3xl opacity-50"
+        {/* Pulsing core glow */}
+        <motion.div
+          className="absolute inset-0 -z-10 blur-xl"
           style={{
-            background: "radial-gradient(circle at 40% 50%, hsl(195 100% 45% / 0.4), transparent 60%)",
+            background: `radial-gradient(circle, hsl(329 100% 50% / ${0.4 + lightIntensity * 0.5}), transparent 40%)`,
           }}
-        />
-        <div 
-          className="absolute inset-0 -z-10 blur-3xl opacity-40"
-          style={{
-            background: "radial-gradient(circle at 60% 50%, hsl(280 80% 60% / 0.4), transparent 60%)",
+          animate={{
+            scale: [1, 1.2, 1],
+            opacity: [0.5, 0.8, 0.5],
           }}
-        />
-        <div 
-          className="absolute inset-0 -z-10 blur-2xl opacity-30"
-          style={{
-            background: "radial-gradient(circle at 50% 40%, hsl(329 100% 50% / 0.3), transparent 50%)",
+          transition={{
+            duration: 2,
+            repeat: Infinity,
+            ease: "easeInOut",
           }}
         />
       </motion.div>

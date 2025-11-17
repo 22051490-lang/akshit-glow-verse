@@ -120,6 +120,17 @@ All colors MUST be HSL.
   h1, h2, h3, h4, h5, h6 {
     @apply font-spaceGrotesk;
   }
+  
+  /* Performance optimizations */
+  * {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
 @layer utilities {
@@ -133,5 +144,15 @@ All colors MUST be HSL.
   
   .glow-cyan {
     box-shadow: var(--glow-cyan);
+  }
+  
+  /* Performance utilities */
+  .gpu-accelerated {
+    transform: translateZ(0);
+    will-change: transform;
+  }
+  
+  .smooth-transition {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 }

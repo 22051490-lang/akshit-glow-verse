@@ -1,6 +1,6 @@
 import { motion, useMotionValue, useSpring } from "framer-motion";
 import { useEffect, useState } from "react";
-import aiSphereCore from "@/assets/ai-sphere-core.png";
+import atLogo from "@/assets/at-logo.png";
 
 interface Particle {
   id: number;
@@ -197,8 +197,8 @@ const InteractiveAIRobot = () => {
         }}
       >
         <motion.img
-          src={aiSphereCore}
-          alt="Glowing holographic AI core sphere made of flowing data streams and neural connections"
+          src={atLogo}
+          alt="AT logo - Akshit Thakur's futuristic holographic initials with neon glow"
           className="w-full max-w-lg h-auto"
           style={{
             filter: `brightness(${0.85 + lightIntensity * 0.3}) drop-shadow(0 0 ${30 + lightIntensity * 40}px hsl(195 100% 45% / ${0.5 + lightIntensity * 0.3})) drop-shadow(0 0 ${40 + lightIntensity * 50}px hsl(280 80% 60% / ${0.4 + lightIntensity * 0.3}))`,

@@ -138,8 +138,8 @@ const InteractiveAIRobot = () => {
       <motion.div
         className="relative cursor-pointer p-16 rounded-full"
         style={{
-          background: "radial-gradient(circle, hsl(var(--background)) 0%, hsl(var(--background) / 0.6) 50%, transparent 100%)",
-          boxShadow: "0 0 80px hsl(195 100% 45% / 0.15), 0 0 120px hsl(280 80% 60% / 0.1), inset 0 0 60px hsl(var(--background) / 0.8)",
+          background: "radial-gradient(circle, hsl(220 20% 97%) 0%, hsl(220 20% 95% / 0.8) 40%, hsl(195 100% 98% / 0.3) 70%, transparent 100%)",
+          boxShadow: "0 0 100px hsl(195 100% 75% / 0.25), 0 0 150px hsl(280 80% 85% / 0.2), inset 0 0 80px hsl(220 20% 98% / 0.9)",
         }}
         whileHover={{
           scale: 1.15,
